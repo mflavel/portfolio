@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import logo from "./images/Logo .svg";
 
 
@@ -9,12 +9,12 @@ const Nav = () => {
             <div className="site-inner">
                 <img src={logo} alt="Logo" />
                 <div className="nav-links">
-                    <Link to="/">Home</Link>
-                    <Link to="/about">About</Link>
-                    <Link to="/menu">Menu</Link>
-                    <Link to="/reservations">Reservations</Link>
-                    <Link to="/order-online">Order Online</Link>
-                    <Link to="/login">Login</Link>
+                    <NavLink to="/" end>Home</NavLink>
+                    <NavLink to="/about">About</NavLink>
+                    <NavLink to="/menu">Menu</NavLink>
+                    <NavLink to="/reservations">Reservations</NavLink>
+                    <NavLink to="/order-online">Order Online</NavLink>
+                    <NavLink to="/login">Login</NavLink>
                 </div>
             </div>
         </nav>
