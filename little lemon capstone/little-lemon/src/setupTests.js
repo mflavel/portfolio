@@ -1,12 +1,18 @@
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import { render, screen } from "@testing-library/react";
-import BookingForm from './BookingForm';
+// This file contains a lightweight test that verifies the BookingForm's
+// fetch-like behavior populates the time select with at least one option.
+import React from 'react';
+import '@testing-library/jest-dom';
+import { render, waitFor } from '@testing-library/react';
+import BookingForm from './pages/BookingForm';
 
-test('Renders the BookingForm heading', () => {
+test('fetchData provides at least one available booking time', async () => {
     render(<BookingForm />);
-    const headingElement = screen.getByText("Book Now");
-    expect(headingElement).toBeInTheDocument();
-})
+
+    // wait for options to be populated by the component's fetchData
+    await waitFor(() => {
+        const options = Array.from(document.querySelectorAll('option'));
+        const timeOptions = options.filter(o => /^\d{2}:\d{2}$/.test(o.value));
+        expect(timeOptions.length).toBeGreaterThan(0);
+    }, { timeout: 1500 });
+});

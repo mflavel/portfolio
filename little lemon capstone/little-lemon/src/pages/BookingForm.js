@@ -5,7 +5,16 @@ import '../Css/bookingForm.css';
 
 
 const BookingForm = () => {
-    const [date, setDate] = useState('');
+    // helper to get today's date in YYYY-MM-DD for the date input
+    const getTodaysDate = () => {
+        const d = new Date();
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    };
+
+    const [date, setDate] = useState(getTodaysDate());
     const [time, setTime] = useState('');
     const [guests, setGuests] = useState(1);
     const [occasion, setOccasion] = useState('Birthday');
@@ -13,13 +22,45 @@ const BookingForm = () => {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
 
-    const availableTimes = ['17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
+    // availableTimes is loaded via fetchData so it can vary by date
+    const [availableTimes, setAvailableTimes] = useState([]);
     const partyOccasion = ['Birthday', 'Anniversary', 'Other'];
 
-    //test to check object are being submitted
+    // Simulated fetch function that returns available times for a given date.
+    // Replace this with a real API call (fetch/axios) as needed.
+    const fetchData = (selectedDate) => {
+        const baseTimes = ['17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
+        return new Promise((resolve) => {
+            // simple deterministic filter based on day-of-month so results vary by date
+            const dateToUse = selectedDate || getTodaysDate();
+            const day = new Date(dateToUse).getDate();
+            const filtered = baseTimes.filter((_, i) => ((i + day) % 2) === 0);
+            // ensure there is at least one time available
+            const result = filtered.length ? filtered : baseTimes;
+            setTimeout(() => resolve(result), 200);
+        });
+    };
+
+    // when the component mounts, fetch available times for today's date
     useEffect(() => {
-        console.log('Reservation state changed:', { date, time, guests, occasion });
-    }, [date, time, guests, occasion]);
+        let mounted = true;
+        fetchData(date).then((times) => {
+            if (mounted) setAvailableTimes(times);
+        });
+        return () => { mounted = false; };
+    }, []);
+
+    // handle date changes by fetching times for the selected date
+    const handleDateChange = (e) => {
+        const val = e.target.value;
+        setDate(val);
+        // fetch new times for this date
+        fetchData(val).then((times) => {
+            setAvailableTimes(times);
+            setTime('');
+        });
+    };
+
 
     const [clicked, setClicked] = useState(false);
     const navigate = useNavigate();
@@ -65,7 +106,7 @@ const BookingForm = () => {
             <h1 style={{ textAlign: 'center', margin: '1rem 0', fontSize: '20px' }}><b>Reserve a Table</b></h1>
             <form className="booking-page" onSubmit={handleSubmit} style={{ display: 'grid', maxWidth: '400px', gap: '8px' }}>
                 <FormLabel htmlFor="res-date">Choose date</FormLabel>
-                <Input className="input-booking" type="date" id="res-date" required value={date} onChange={(e) => setDate(e.target.value)} />
+                <Input className="input-booking" type="date" id="res-date" required value={date} onChange={handleDateChange} />
                 <FormLabel htmlFor="res-time">Choose time</FormLabel>
                 <Select className="input-booking" id="res-time" placeholder="Select time" required value={time} onChange={(e) => setTime(e.target.value)}>
                     {availableTimes.map((timeOption) => (
