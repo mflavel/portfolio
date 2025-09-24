@@ -145,6 +145,7 @@ const BookingForm = () => {
                     type="date"
                     id="date"
                     name="date"
+                    aria-label="Choose date"
                     value={formik.values.date}
                     onChange={(e) => { formik.handleChange(e); refreshTimesForDate(e.target.value, formik.setFieldValue); }}
                     onBlur={formik.handleBlur}
@@ -157,6 +158,7 @@ const BookingForm = () => {
                     id="time"
                     name="time"
                     placeholder="Select time"
+                    aria-label="Select time"
                     value={formik.values.time}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -172,7 +174,14 @@ const BookingForm = () => {
                 {formik.touched.guests && formik.errors.guests && <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.guests}</div>}
 
                 <FormLabel htmlFor="occasion">Occasion</FormLabel>
-                <Select className="input-booking" id="occasion" name="occasion" value={formik.values.occasion} onChange={formik.handleChange} onBlur={formik.handleBlur}>
+                <Select
+                    className="input-booking"
+                    id="occasion"
+                    name="occasion"
+                    aria-label="Select occasion"
+                    value={formik.values.occasion}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}>
                     {partyOccasion.map((partyOption) => (
                         <option key={partyOption} value={partyOption}>{partyOption}</option>
                     ))}
@@ -180,11 +189,27 @@ const BookingForm = () => {
                 {formik.touched.occasion && formik.errors.occasion && <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.occasion}</div>}
 
                 <FormLabel htmlFor="Name">Name</FormLabel>
-                <Input className="input-booking" type="text" id="name" name="name" placeholder="Your Name" value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                <Input
+                    className="input-booking"
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Your Full Name"
+                    aria-label="Your Full Name"
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur} />
                 {formik.touched.name && formik.errors.name && <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.name}</div>}
 
                 <FormLabel htmlFor="Email">Email</FormLabel>
-                <Input className="input-booking" type="email" id="email" name="email" placeholder="Your Email" value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                <Input
+                    className="input-booking"
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Your Email"
+                    aria-label="Your Email"
+                    value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} />
                 {formik.touched.email && formik.errors.email && <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.email}</div>}
 
                 <FormLabel htmlFor="Phone">Phone Number</FormLabel>
@@ -192,6 +217,7 @@ const BookingForm = () => {
                 {formik.touched.phone && formik.errors.phone && <div style={{ color: 'red', fontSize: '12px' }}>{formik.errors.phone}</div>}
                 <Button
                     type="submit"
+                    aria-label="Make Your reservation"
                     style={buttonStyle}
                     onClick={() => {
                         setClicked(true);
@@ -202,18 +228,7 @@ const BookingForm = () => {
 
             {/* conformation pop up */}
             {showConfirm && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: 'rgba(0,0,0,0.4)',
-                    zIndex: 1000
-                }}>
+                <div className="conformationPopUp" >
                     <div style={{
                         background: '#fff',
                         padding: '1.25rem',

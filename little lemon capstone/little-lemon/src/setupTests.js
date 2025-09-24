@@ -3,7 +3,8 @@
 // fetch-like behavior populates the time select with at least one option.
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import BookingForm from './pages/BookingForm';
 
 test('fetchData provides at least one available booking time', async () => {
@@ -15,4 +16,21 @@ test('fetchData provides at least one available booking time', async () => {
         const timeOptions = options.filter(o => /^\d{2}:\d{2}$/.test(o.value));
         expect(timeOptions.length).toBeGreaterThan(0);
     }, { timeout: 1500 });
+});
+
+test('shows email validation error when invalid email is entered', async () => {
+    render(<BookingForm />);
+
+    // find the email input by placeholder and type an invalid email
+    const emailInput = screen.getByPlaceholderText(/Your Email/i);
+    await userEvent.click(emailInput);
+    await userEvent.keyboard('not-an-email');
+
+    // move focus away to trigger blur validation
+    await userEvent.tab();
+
+    // the Yup schema uses the message 'Invalid email' for invalid addresses
+    await waitFor(() => {
+        expect(screen.getByText(/Invalid email/i)).toBeInTheDocument();
+    });
 });
